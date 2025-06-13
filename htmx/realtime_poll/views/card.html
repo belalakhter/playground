@@ -1,0 +1,18 @@
+{{define "card.html"}}
+<div class="vote_card">
+    <h2 class="card-title">Name: {{.Name}}</h2>
+    <p class="card-position">Position: {{.Position}}</p>
+
+    <div class="card-actions">
+        <button
+            class="btn"
+            hx-post="/vote/{{.ID}}"
+            hx-target="#count-{{.ID}}"
+            hx-swap="outerHTML"
+        >
+            Vote
+        </button>
+        <p id="count-{{.ID}}" class="card-count">Count: {{.Count}}</p>
+    </div>
+</div>
+{{end}}

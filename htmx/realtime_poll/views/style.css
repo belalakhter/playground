@@ -1,0 +1,230 @@
+/* styles.css */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #4caf50;
+    color: white;
+    padding: 1rem;
+}
+
+header h1 {
+    margin: 0;
+}
+
+header button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    background-color: white;
+    color: #4caf50;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 2rem;
+}
+
+header button:hover {
+    background-color: #f1f1f1;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    background-color: white;
+    color: #4caf50;
+    border: black solid 2px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 2rem;
+}
+
+.btn:hover {
+    background-color: #f1f1f1;
+}
+
+#modal {
+    /* Underlay covers entire screen. */
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+
+    /* Flexbox centers the .modal-content vertically and horizontally */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    /* Animate when opening */
+    animation-name: fadeIn;
+    animation-duration: 150ms;
+    animation-timing-function: ease;
+}
+.input {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.input:focus {
+    border-color: #4caf50;
+    outline: none;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+#modal > .modal-underlay {
+    /* underlay takes up the entire viewport. This is only
+	required if you want to click to dismiss the popup */
+    position: absolute;
+    z-index: -1;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+}
+
+#modal > .modal-content {
+    /* Position visible dialog near the top of the window */
+    margin-top: 20vh;
+
+    /* Sizing for visible dialog */
+    width: 80%;
+    max-width: 600px;
+
+    /* Display properties for visible dialog*/
+    border: solid 1px #999;
+    border-radius: 8px;
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.3);
+    background-color: white;
+    padding: 20px;
+
+    /* Animate when opening */
+    animation-name: zoomIn;
+    animation-duration: 150ms;
+    animation-timing-function: ease;
+}
+
+#modal.closing {
+    /* Animate when closing */
+    animation-name: fadeOut;
+    animation-duration: 150ms;
+    animation-timing-function: ease;
+}
+
+#modal.closing > .modal-content {
+    /* Animate when closing */
+    animation-name: zoomOut;
+    animation-duration: 150ms;
+    animation-timing-function: ease;
+}
+
+div#cards {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    padding: 2rem;
+}
+
+.vote_card_container .vote_card {
+    background-color: white;
+    border: 2px solid #4caf50;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin: 1rem;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.vote_card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+.card-title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.card-position {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 1.5rem;
+}
+
+.card-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn:hover {
+    background-color: #45a049;
+}
+
+.card-count {
+    font-size: 1rem;
+    color: #444;
+    margin: 0;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes zoomIn {
+    0% {
+        transform: scale(0.9);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes zoomOut {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(0.9);
+    }
+}

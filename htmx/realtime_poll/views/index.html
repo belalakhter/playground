@@ -1,0 +1,31 @@
+{{block "index" .}}
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Vote</title>
+        <link rel="stylesheet" href="/static/style.css" />
+        <script
+            src="https://unpkg.com/htmx.org@2.0.4"
+            integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+"
+            crossorigin="anonymous"
+        ></script>
+        <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    </head>
+    <body>
+        <header>
+            <h1>Realtime Poll</h1>
+            <button hx-get="/modal" hx-target="body" hx-swap="beforeend">
+                New Candidate
+            </button>
+        </header>
+
+        <div id="cards" class="vote_card_container">
+            {{range .}} {{template "card.html" .}} {{end}}
+        </div>
+    </body>
+</html>
+{{end}}

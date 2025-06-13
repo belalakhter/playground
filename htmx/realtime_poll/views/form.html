@@ -1,0 +1,41 @@
+<div
+    id="modal"
+    _="on closeModal add .closing then wait for animationend then remove me"
+>
+    <div class="modal-underlay" _="on click trigger closeModal"></div>
+    <div class="modal-content">
+        <form
+            method="POST"
+            hx-post="/add-candidate"
+            hx-target="#cards"
+            hx-swap="beforeend"
+            _="on htmx:afterOnLoad trigger closeModal"
+        >
+            <input
+                type="text"
+                class="input"
+                name="name"
+                placeholder="Name"
+                required
+            />
+            <br /><br />
+            <input
+                type="text"
+                class="input"
+                name="position"
+                placeholder="Position"
+                required
+            />
+            <br /><br />
+            <input
+                type="password"
+                class="input"
+                name="password"
+                placeholder="Password"
+                required
+            />
+            <br /><br />
+            <button class="btn">Submit</button>
+        </form>
+    </div>
+</div>
