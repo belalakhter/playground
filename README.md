@@ -1,4 +1,4 @@
-# HTMX:
+# HTMX
 - realtime poll app
 
 # golang
