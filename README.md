@@ -1,9 +1,9 @@
-# HTMX
+## HTMX
 - realtime poll app
 
-# golang
+## golang
 - DSAs Binary tree
 - Resp Map
 
-# php
+## php
 - website_with_sqlite

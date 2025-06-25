@@ -1,3 +1,3 @@
-module github.com/belalakhter/cool_projects/htmx_poll
+module github.com/belalakhter/playground/realtime_poll
 
 go 1.23.3
