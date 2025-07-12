@@ -22,6 +22,7 @@ type Candidate struct {
 var (
 	candidates []Candidate
 	nextID     = 1
+	Votedmap   = make(map[int]bool)
 )
 
 func main() {
@@ -73,13 +74,17 @@ func main() {
 			http.Error(w, "Invalid ID", http.StatusBadRequest)
 			return
 		}
-
-		for i := range candidates {
-			if candidates[i].ID == id {
-				candidates[i].Count++
-				fmt.Fprintf(w, `<p id="count-%d" class="card-count">Count: %d</p>`, id, candidates[i].Count)
-				return
+		if !Votedmap[id] {
+			Votedmap[id] = true
+			for i := range candidates {
+				if candidates[i].ID == id {
+					candidates[i].Count++
+					fmt.Fprintf(w, `<p id="count-%d" class="card-count">Count: %d</p>`, id, candidates[i].Count)
+					return
+				}
 			}
+		} else {
+			http.Error(w, "Voted Already", http.StatusBadRequest)
 		}
 
 		http.Error(w, "Candidate not found", http.StatusNotFound)
