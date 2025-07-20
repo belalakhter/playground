@@ -1,9 +1,7 @@
-## HTMX
-- realtime poll app
+## Frontend
+- Realtime poll app lets user vote to fav candidate using golang and htmx
+- Token Airdrop Launchpad presale for ethereum using hardhad and vanilla typescript
 
-## golang
+## DSA
 - DSAs Binary tree
 - Resp Map
-
-## php
-- website_with_sqlite

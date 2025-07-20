@@ -1,0 +1,36 @@
+{
+  "name": "airdrop_launchpad",
+  "version": "1.0.0",
+  "description": "To do airdrops for Defi Tokens",
+  "main": "index.js",
+  "keywords": [
+    "airdrop",
+    "launchpad",
+    "defi",
+    "blockchain",
+    "smart-contracts",
+    "ethereum",
+    "hardhat",
+    "ethers",
+    "token-distribution",
+    "solidity"
+  ],
+  "author": "Belal Akhter",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^6.1.0",
+    "@types/chai": "^5.2.2",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^24.0.15",
+    "chai": "^4.5.0",
+    "ethers": "^6.15.0",
+    "hardhat": "^2.26.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "scripts": {
+    "start": "webpack serve --mode development",
+    "build": "webpack --mode production"
+  }
+}
