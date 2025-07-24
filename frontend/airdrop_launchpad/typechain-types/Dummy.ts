@@ -3,10 +3,13 @@
 /* eslint-disable */
 import type {
   BaseContract,
+  BigNumberish,
   BytesLike,
   FunctionFragment,
   Result,
   Interface,
+  EventFragment,
+  AddressLike,
   ContractRunner,
   ContractMethod,
   Listener,
@@ -15,16 +18,34 @@ import type {
   TypedContractEvent,
   TypedDeferredTopicFilter,
   TypedEventLog,
+  TypedLogDescription,
   TypedListener,
   TypedContractMethod,
 } from "./common";
 
 export interface DummyInterface extends Interface {
-  getFunction(nameOrSignature: "hello"): FunctionFragment;
+  getFunction(nameOrSignature: "addCount" | "getCount"): FunctionFragment;
 
-  encodeFunctionData(functionFragment: "hello", values?: undefined): string;
+  getEvent(nameOrSignatureOrTopic: "Inc"): EventFragment;
 
-  decodeFunctionResult(functionFragment: "hello", data: BytesLike): Result;
+  encodeFunctionData(functionFragment: "addCount", values?: undefined): string;
+  encodeFunctionData(functionFragment: "getCount", values?: undefined): string;
+
+  decodeFunctionResult(functionFragment: "addCount", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getCount", data: BytesLike): Result;
+}
+
+export namespace IncEvent {
+  export type InputTuple = [caller: AddressLike, newCount: BigNumberish];
+  export type OutputTuple = [caller: string, newCount: bigint];
+  export interface OutputObject {
+    caller: string;
+    newCount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
 
 export interface Dummy extends BaseContract {
@@ -70,15 +91,39 @@ export interface Dummy extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
-  hello: TypedContractMethod<[], [string], "view">;
+  addCount: TypedContractMethod<[], [void], "nonpayable">;
+
+  getCount: TypedContractMethod<[], [bigint], "view">;
 
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
 
   getFunction(
-    nameOrSignature: "hello"
-  ): TypedContractMethod<[], [string], "view">;
+    nameOrSignature: "addCount"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "getCount"
+  ): TypedContractMethod<[], [bigint], "view">;
 
-  filters: {};
+  getEvent(
+    key: "Inc"
+  ): TypedContractEvent<
+    IncEvent.InputTuple,
+    IncEvent.OutputTuple,
+    IncEvent.OutputObject
+  >;
+
+  filters: {
+    "Inc(address,uint256)": TypedContractEvent<
+      IncEvent.InputTuple,
+      IncEvent.OutputTuple,
+      IncEvent.OutputObject
+    >;
+    Inc: TypedContractEvent<
+      IncEvent.InputTuple,
+      IncEvent.OutputTuple,
+      IncEvent.OutputObject
+    >;
+  };
 }

@@ -8,8 +8,8 @@ async function deploy() {
 }
 
 //@ts-ignore
-async function sayHello(deployed) {
-  console.log("say Hello:", await deployed.hello());
+async function getCount(deployed) {
+  console.log("Count: ", await deployed.getCount());
 }
 
-deploy().then(sayHello);
+deploy().then(getCount);
