@@ -34,9 +34,13 @@ async function run() {
   if (!(await hasAccounts()) && !(await requestAccounts())) {
     throw new Error("No metamask accounts found!");
   }
+
   const provider = new ethers.BrowserProvider(getEth());
   const signer = await provider.getSigner();
   const Hello = new ethers.Contract(Contract_Address, Dummy.abi, signer);
+  console.log("Contract Address: ", Contract_Address);
+  const network = await provider.getNetwork();
+  console.log("Network:", network);
   const el = document.createElement("div");
   //@ts-ignore
   async function setCounter(count?) {
