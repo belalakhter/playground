@@ -1,6 +1,8 @@
 #!bin/bash
 
-export CONTRACT_ADDRESS=0x5fbdb2315678afecb367f032d93f642f64180aa3
+export INFURA_API_KEY=ea61f4b254684a94b3679d57ea279588
+export PRIVATE_KEY=6e984af1d4d2047e9c43eba513f3fca44efa0bd7d2db35565c3521e6a33ba3d0
 export DEBUG=true
+export CONTRACT_ADDRESS=0xab525E70C62563312aa53b9A6550542325a855b4
 
 echo "Environment variables set successfully."
