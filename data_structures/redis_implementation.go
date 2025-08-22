@@ -37,7 +37,7 @@ func main() {
 
 
 func NewServer() *TcpServer {
-	Listener, err := net.Listen("tcp", ":8989")
+	Listener, err := net.Listen("tcp", ":6379")
 	if err != nil {
 		fmt.Println("Error starting server:", err)
 		os.Exit(1)
