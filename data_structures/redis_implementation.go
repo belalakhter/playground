@@ -95,7 +95,6 @@ func (server *TcpServer) StartServer(){
 						case "SET":
 							if len(parts) != 3 {
 								writer.WriteString("-ERR wrong args\r\n")
-								writer.Flush()
 								continue
 							}
 							key, val := parts[1], parts[2]
@@ -109,29 +108,25 @@ func (server *TcpServer) StartServer(){
 							server.store[key] = val
 							server.evictor.Add(key)
 							writer.WriteString("+OK\r\n")
-							writer.Flush()
 
 						case "GET":
 							if len(parts) != 2 {
 								writer.WriteString("-ERR wrong args\r\n")
-								writer.Flush()
 								continue
 							}
 							key := parts[1]
 							val, ok := server.store[key]
 							if !ok {
 								writer.WriteString("$-1\r\n")
-								writer.Flush()
 							} else {
 								server.evictor.Touch(key)
 								writer.WriteString("$" + strconv.Itoa(len(val)) + "\r\n" + val + "\r\n")
-								writer.Flush()
 							}
 
 						default:
 							writer.WriteString("-ERR unknown command\r\n")
-							writer.Flush()
 						}
+						writer.Flush()
 				}
 			}(conn, id)
 		}
