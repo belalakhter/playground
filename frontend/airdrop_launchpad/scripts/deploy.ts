@@ -1,22 +1,19 @@
-import "@nomicfoundation/hardhat-toolbox";
 import { ethers } from "hardhat";
 
-async function deploy() {
-  const DummyFactory = await ethers.getContractFactory("Dummy");
-    const dummy = await DummyFactory.deploy();
-    await dummy.waitForDeployment();
-    console.log("Dummy contract deployed at:", await dummy.getAddress());
-    return dummy;
+async function main() {
+  const NAME = process.env.TOKEN_NAME || "DropRewards";
+  const SYMBOL = process.env.TOKEN_SYMBOL || "DROP";
+  const SUPPLY = parseInt(process.env.TOTAL_SUPPLY || "1000000", 10);
+  const PRICE = BigInt(process.env.TOKEN_PRICE || "1000000000000000");
+
+  const TokenFactory = await ethers.getContractFactory("AirdropToken");
+  const token = await TokenFactory.deploy(NAME, SYMBOL, SUPPLY, PRICE);
+  await token.waitForDeployment();
+
+  console.log("AirdropToken deployed at:", await token.getAddress());
 }
 
-//@ts-ignore
-async function getCount(contract) {
-  try {
-    const count = await contract.getCount();
-    console.log("Count:", count.toString());
-  } catch (err) {
-    console.error("Failed to call getCount():", err);
-  }
-}
-
-deploy().then(getCount).catch(console.error);
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

@@ -1,0 +1,40 @@
+# Node dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Hardhat artifacts
+artifacts/
+cache/
+
+# TypeChain generated types
+typechain-types/
+src/contracts/types/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.*
+scripts/env.sh
+
+# Build outputs
+dist/
+out/
+
+# VSCode / IDE
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Optional: coverage reports
+coverage/

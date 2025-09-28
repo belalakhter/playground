@@ -1,8 +1,14 @@
-#!bin/bash
+#!/bin/bash
 
-export INFURA_API_KEY=ea61f4b254684a94b3679d57ea279588
-export PRIVATE_KEY=6e984af1d4d2047e9c43eba513f3fca44efa0bd7d2db35565c3521e6a33ba3d0
+export INFURA_API_KEY=""
+export PRIVATE_KEY=""
 export DEBUG=true
-export CONTRACT_ADDRESS=0xab525E70C62563312aa53b9A6550542325a855b4
+export CONTRACT_ADDRESS=""
+export COUNTDOWN_HOURS=""
+export IMAGE_URL=""
+export TOTAL_SUPPLY=""
+export TOKEN_PRICE=""
+export TOKEN_NAME=""
+export TOKEN_SYMBOL=""
 
 echo "Environment variables set successfully."

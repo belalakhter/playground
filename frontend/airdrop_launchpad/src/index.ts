@@ -1,84 +1,107 @@
 import { ethers } from "ethers";
-import { Console } from "node:console";
-import { env } from "node:process";
-import Dummy from "..//artifacts/contracts/Dummy.sol/Dummy.json";
+import TokenJson from "../artifacts/contracts/Token.sol/AirdropToken.json";
 
-const Contract_Address = process.env.CONTRACT_ADDRESS || "0xab525E70C62563312aa53b9A6550542325a855b4";
+const countdownEl = document.getElementById("countdown")!;
+const connectWalletBtn = document.getElementById("connectWallet")!;
+const buyBtn = document.getElementById("buyBtn")!;
+const buyAmountInput = document.getElementById("buyAmount") as HTMLInputElement;
+const bannerImage = document.getElementById("bannerImage") as HTMLImageElement | null;
+const remainingEl = document.getElementById("remainingTokens");
+const userBalanceEl = document.getElementById("userBalance");
 
-function getEth() {
-  // @ts-ignore
-  const eth = window.ethereum;
-  return eth;
+const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS!;
+let tokenContract: ethers.Contract | null = null;
+let provider: ethers.BrowserProvider | null = null;
+let signer: ethers.Signer | null = null;
+
+
+if (bannerImage) {
+  bannerImage.src = process.env.IMAGE_URL || "https://placehold.co/1200x300";
 }
 
-async function hasAccounts() {
-  const eth = getEth();
-  const accounts = (await eth.request({ method: "eth_accounts" })) as string[];
-  return accounts && accounts.length;
-}
 
-async function requestAccounts() {
-  const eth = getEth();
-  const accounts = (await eth.request({
-    method: "eth_requestAccounts",
-  })) as string[];
-  return accounts && accounts.length;
-}
-function appendToBody(message: string) {
-  const p = document.createElement("p");
-  p.textContent = message;
-  document.body.appendChild(p);
-}
+const endTime = parseInt(process.env.END_TIME || "0", 10) || Date.now() + 2 * 60 * 60 * 1000;
+setInterval(() => {
+  const now = Date.now();
+  const diff = endTime - now;
 
-async function ensureSepolia() {
-  // @ts-ignore
-  const eth = window.ethereum;
-  const sepoliaChainId = "0xaa36a7";
-  const currentChainId = await eth.request({ method: "eth_chainId" });
-
-  if (currentChainId !== sepoliaChainId) {
-    try {
-      await eth.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: sepoliaChainId }],
-      });
-    } catch (err: any) {
-      throw new Error("❌ Please switch MetaMask to Sepolia Testnet.");
-    }
+  if (diff <= 0) {
+    countdownEl.textContent = "Airdrop Ended";
+    return;
   }
-}
-async function run() {
-  if (!(await hasAccounts()) && !(await requestAccounts())) {
-    throw new Error("No metamask accounts found!");
+
+  const h = Math.floor(diff / (1000 * 60 * 60));
+  const m = Math.floor((diff / (1000 * 60)) % 60);
+  const s = Math.floor((diff / 1000) % 60);
+
+  countdownEl.textContent = `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+}, 1000);
+
+
+connectWalletBtn.addEventListener("click", async () => {
+  try {
+    if (!(window as any).ethereum) return alert("MetaMask not found!");
+
+    const accounts = await (window as any).ethereum.request({ method: "eth_requestAccounts" });
+    const account = accounts[0];
+
+    provider = new ethers.BrowserProvider((window as any).ethereum);
+    signer = await provider.getSigner();
+
+    tokenContract = new ethers.Contract(CONTRACT_ADDRESS, TokenJson.abi, signer);
+
+    await updateTokenMetrics(account);
+
+    alert("Wallet connected: " + account);
+  } catch (err: any) {
+    console.error("Wallet connection error:", err);
+    alert("Failed to connect wallet: " + err.message);
   }
-  await ensureSepolia();
-  const provider = new ethers.BrowserProvider(getEth());
-  const signer = await provider.getSigner();
-  const Hello = new ethers.Contract(Contract_Address, Dummy.abi, signer);
-  console.log("Contract Address: ", Contract_Address);
-  const network = await provider.getNetwork();
-  if ((await provider.getNetwork()).chainId !== 11155111n) {
-    throw new Error("Please switch MetaMask to Sepolia testnet.");
-  }
-  const el = document.createElement("div");
-  //@ts-ignore
-  async function setCounter(count?) {
-    const GetCount = await Hello.getCount();
-    el.innerHTML = count || GetCount.toString();
-  }
-  setCounter();
-  const button = document.createElement("button");
-  button.innerText = "Add Count";
-  button.addEventListener("click", async () => {
-    const tx = await Hello.addCount();
+});
+
+
+
+buyBtn.addEventListener("click", async () => {
+  if (!signer || !tokenContract) return alert("Please connect wallet first.");
+
+  const amount = BigInt(buyAmountInput.value);
+  if (amount <= 0n) return alert("Enter a valid amount");
+
+  try {
+    const pricePerToken = await tokenContract.tokenPrice();
+    const totalCost = pricePerToken * amount;
+
+    const tx = await tokenContract.buyTokens(amount, { value: totalCost });
     await tx.wait();
-    setCounter();
-  });
 
-  Hello.on(Hello.filters.Inc(), (caller: string, newCount: bigint) => {
-    setCounter(newCount.toString());
-  });
-  document.body.appendChild(el);
-  document.body.appendChild(button);
+    const userAddress = await signer.getAddress();
+    await updateTokenMetrics(userAddress);
+
+    alert(`Successfully bought ${amount} tokens!`);
+  } catch (err) {
+    console.error(err);
+    alert("Failed to buy tokens");
+  }
+});
+
+
+const readProvider = new ethers.JsonRpcProvider(`https://sepolia.infura.io/v3/${process.env.INFURA_API_KEY}`);
+const tokenContractReadOnly = new ethers.Contract(CONTRACT_ADDRESS, TokenJson.abi, readProvider);
+
+
+async function updateTokenMetrics(userAddress?: string) {
+  if (!tokenContractReadOnly) return;
+
+
+  const remaining = await tokenContractReadOnly.remainingTokens();
+  if (remainingEl) remainingEl.innerHTML = `Remaining Tokens: <span class="font-mono">${remaining}</span>`;
+
+
+  if (userAddress && userBalanceEl) {
+    const balance = await tokenContractReadOnly.balanceOf(userAddress);
+    userBalanceEl.innerHTML = `Your Balance: <span class="font-mono">${balance}</span>`;
+  }
 }
-run();
+
+
+updateTokenMetrics();

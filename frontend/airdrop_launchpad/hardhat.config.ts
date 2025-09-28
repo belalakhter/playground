@@ -11,4 +11,9 @@ module.exports = {
      }
    },
   solidity: "0.8.28",
+  typechain: {
+      outDir: "src/contracts/types",
+      target: "ethers-v6",
+    },
+
 };
